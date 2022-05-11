@@ -46,7 +46,6 @@ class filosofo(threading.Thread):
             self.vent.tenedores[(self.id+1)%N].config(bg="blue")
             print("FILOSOFO {} coge tenedor {} y {}".format(self.id, self.id,(self.id+1)%N))"""
     def tomar(self):
-        self.vent.labels[self.id].config(bg="pink")
         time.sleep(2)
         filosofo.semaforo.acquire() #SEÑALA QUE TOMARA LOS TENEDORES (EXCLUSION MUTUA)
         filosofo.estado[self.id] = 'HAMBRIENTO'
@@ -63,9 +62,6 @@ class filosofo(threading.Thread):
         self.verificar(self.izquierda(self.id))
         self.verificar(self.derecha(self.id))
         filosofo.semaforo.release() #YA TERMINO DE MANIPULAR TENEDORES
-        """print("FILOSOFO {} suelta tenedor {} y {}".format(self.id, self.id,(self.id+1)%N))
-        self.vent.tenedores[self.id].config(bg="grey")
-        self.vent.tenedores[(self.id+1)%N].config(bg="grey")"""
 
     def comer(self):
         self.vent.tenedores[self.id].config(bg="blue")
@@ -79,7 +75,7 @@ class filosofo(threading.Thread):
         self.vent.tenedores[(self.id+1)%N].config(bg="blue", fg="white")
         time.sleep(4) #TIEMPO ARBITRARIO PARA COMER
         self.vent.escribe("FILOSOFO {} TERMINO DE COMER".format(self.id))
-        
+
         print("FILOSOFO {} suelta tenedor {} y {}".format(self.id, self.id,(self.id+1)%N))
         self.vent.tenedores[self.id].config(bg="grey", fg="white")
         self.vent.tenedores[(self.id+1)%N].config(bg="grey", fg="white")
@@ -89,6 +85,7 @@ class filosofo(threading.Thread):
         self.vent.caja[self.id].insert(0,self.comida)
 
     def run(self):
+        self.vent.labels[self.id].config(bg="pink")
         for i in range(random.randint(1,5)):
             self.pensar() #EL FILOSOFO PIENSA
             self.tomar() #AGARRA LOS TENEDORES CORRESPONDIENTES
